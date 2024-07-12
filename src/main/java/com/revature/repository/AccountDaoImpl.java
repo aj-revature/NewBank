@@ -27,6 +27,7 @@ public class AccountDaoImpl implements AccountDao {
             ResultSet rs = stmt.getGeneratedKeys();
             if (result == 1) {
                 account.setId(rs.getInt(1));
+                account.setBalance(rs.getFloat(2));
                 System.out.println("Account #" + account.getId() + " has been created and has a balance of $" +
                         df.format(account.getBalance()));
                 return account;
