@@ -21,9 +21,15 @@ public class UserService {
 
                 return userDao.createUser(newUserCredentials);
             }
+            else {
+                System.out.println("Username " + newUserCredentials.getUsername() + " already exists." +
+                        " Please choose a unique username.");
+            }
+        } else {
+            System.out.println("Username " + newUserCredentials.getUsername() + " is too long." +
+                    " Please choose a username shorter than 30 characters.");
         }
-        //3. persist user data if valid, reject if not
-        throw new RuntimeException("Please check length and uniqueness of username and password.");
+        return newUserCredentials;
     }
 
     public User checkLoginCredentials(User credentials) {
@@ -33,10 +39,12 @@ public class UserService {
             if (usernameMatches && passwordMatch) {
                 System.out.println("You are logged in!");
                 credentials.setUserId(user.getUserId());
-                return credentials;
             }
         }
-        throw new LoginFail("Credentials are invalid");
+        if (credentials.getUserId() == 0) {
+            System.out.println("Credentials are incorrect. Please try again.");
+        }
+        return credentials;
     }
 
     private boolean checkUsernamePasswordLength(User userCredentials) {

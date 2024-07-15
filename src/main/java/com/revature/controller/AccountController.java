@@ -14,8 +14,8 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    public Account createNewAccount(Account account, User user) {
-        return accountService.createAccount(account, user);
+    public Account createNewAccount(Account account) {
+        return accountService.createAccount(account);
 
     }
 

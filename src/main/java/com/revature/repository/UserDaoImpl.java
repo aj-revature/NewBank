@@ -18,16 +18,17 @@ public class UserDaoImpl implements UserDao {
             preppedStatement.setString(1, newUserCredentials.getUsername());
             preppedStatement.setString(2, newUserCredentials.getPassword());
             int result = preppedStatement.executeUpdate();
-            if (result == 1){
+            if (result == 1) {
                 newUserCredentials.setUserId(getUserIdByUsername(newUserCredentials.getUsername()).getUserId());
-                System.out.printf("New user created: %s\n", newUserCredentials.getUsername());
+                System.out.printf("New user created. Welcome to the Bank, %s!\n", newUserCredentials.getUsername());
                 return newUserCredentials;
             }
-            throw new UserSQLException("user could not be created; please try again");
+            throw new UserSQLException("User could not be created; please try again");
 
         } catch (SQLException e) {
             throw new UserSQLException(e.getMessage());
-        }    }
+        }
+    }
 
     @Override
     public User getUserIdByUsername(String username) {
@@ -45,7 +46,8 @@ public class UserDaoImpl implements UserDao {
 
         } catch (SQLException e) {
             throw new UserSQLException(e.getMessage());
-        }    }
+        }
+    }
 
     @Override
     public List<User> getAllUsers() {
@@ -62,5 +64,6 @@ public class UserDaoImpl implements UserDao {
 
         } catch (SQLException e) {
             throw new LoginFail(e.getMessage());
-        }    }
+        }
+    }
 }

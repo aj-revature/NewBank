@@ -14,9 +14,9 @@ public class AccountService {
         this.accountDao = accountDao;
     }
 
-    public Account createAccount(Account account, User user) {
+    public Account createAccount(Account account) {
         if (checkStartingBalance(account)) {
-            return accountDao.createAccount(account, user);
+            return accountDao.createAccount(account);
 
         }
         throw new RuntimeException();

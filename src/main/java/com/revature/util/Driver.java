@@ -18,7 +18,6 @@ public class Driver {
     protected boolean continueBanking;
     private String stringOption;
     private float numberOption;
-    private final Scanner scanner = new Scanner(System.in);
     private User currentUser = new User("", "");
     private List<Account> accounts = new ArrayList<>();
     private Account currentAccount = new Account();
@@ -30,6 +29,7 @@ public class Driver {
     }
 
     public void menu() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Please choose below:");
         System.out.println("1. Login");
         System.out.println("2. Register");
@@ -38,56 +38,71 @@ public class Driver {
         try {
             switch (stringOption) {
                 case "1":
-                    System.out.println("login");
                     User credentials = getUserCredentials();
                     currentUser = userController.login(credentials);
+                    while (currentUser.getUserId() == 0) {
+                        credentials = getUserCredentials();
+                        currentUser = userController.login(credentials);
+                    }
                     accounts = accountController.getAllAccounts(currentUser);
                     currentUser.setAccounts(accounts);
                     System.out.println(currentUser);
+                    accountCreateAndView();
                     break;
                 case "2":
-                    System.out.println("register");
-                    User registerCredentials = getUserCredentials();
-                    currentUser = userController.registerNewUser(registerCredentials);
+//                     registerCredentials = getUserCredentials();
+                    while (currentUser.getUserId() == 0) {
+                        User registerCredentials = getUserCredentials();
+                        currentUser = userController.registerNewUser(registerCredentials);
+                    }
+                    menu();
                     break;
                 case "0":
+                    System.out.println("Thank you for banking with us. Goodbye!");
                     break;
             }
         } catch (RuntimeException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
-        accountsPrompt();
     }
 
-    public void accountsPrompt() {
+    public void accountCreateAndView() {
         if (!accounts.isEmpty()) {
             System.out.println("1. Create Account");
             System.out.println("2. View All Accounts");
+            System.out.println("0. Log Out");
         } else {
             System.out.println("1. Create Account");
+            System.out.println("0. Log Out");
         }
-        String choice = scanner.nextLine();
-        switch (choice) {
+        Scanner scanner = new Scanner(System.in);
+        String viewOrCreate = scanner.nextLine();
+        switch (viewOrCreate) {
             case "1":
                 Account newAccount = getNewAccountDetails();
-                currentAccount = accountController.createNewAccount(newAccount, currentUser);
+                currentAccount = accountController.createNewAccount(newAccount);
                 accounts.add(currentAccount);
                 currentUser.setAccounts(accounts);
-                accountsPrompt();
+                accountCreateAndView();
                 break;
             case "2":
-                currentAccount = selectAccount(printAccounts(currentUser));
+                selectAccount(printAccounts(currentUser));
                 accountOptions();
                 break;
+            case "0":
+                System.out.println("You are logged out. Goodbye!");
+                menu();
+                break;
             default:
-                System.out.println("Please choose options 1. or 2.");
-                accountsPrompt();
+                accountCreateAndView();
                 break;
         }
 
     }
 
     public void accountOptions() {
+        Scanner scanner = new Scanner(System.in);
+
         System.out.println("What would you like to do?");
         System.out.println("1. Deposit Money");
         System.out.println("2. Withdraw Money");
@@ -95,48 +110,59 @@ public class Driver {
         String choice = scanner.nextLine();
         switch (choice) {
             case "1":
-                System.out.println("Your current account balance is $" + currentAccount.getBalance());
+                System.out.println("Your current account balance is $" + df.format(currentAccount.getBalance()));
                 System.out.println("How much would you like to deposit?");
                 numberOption = scanner.nextFloat();
                 currentAccount = accountController.deposit(currentAccount, numberOption);
-                accountsPrompt();
+                accountCreateAndView();
                 break;
             case "2":
-                System.out.println("Your current account balance is $" + currentAccount.getBalance());
+                System.out.println("Your current account balance is $" + df.format(currentAccount.getBalance()));
                 System.out.println("How much would you like to withdraw?");
                 numberOption = scanner.nextFloat();
-                currentAccount = accountController.withdraw(currentAccount, numberOption);
-                accountsPrompt();
+                if (currentAccount.getBalance() <= numberOption) {
+                    System.out.println("Your current account balance is $" + df.format(currentAccount.getBalance()));
+                    System.out.println("Please enter an amount that is less than your current balance:");
+                    float numberChoice = scanner.nextFloat();
+                    currentAccount = accountController.withdraw(currentAccount, numberChoice);
+                } else {
+                    currentAccount = accountController.withdraw(currentAccount, numberOption);
+                }
+                accountCreateAndView();
                 break;
             case "3":
                 System.out.println("Are you sure you want to delete " + currentAccount.getType()
                         + " Account #" + currentAccount.getId() +
-                        " and withdraw the total balance of $" + currentAccount.getBalance() + "?");
+                        " and withdraw the total balance of $" + df.format(currentAccount.getBalance()) + "? (y/n)");
                 String doDelete = scanner.nextLine();
                 if (doDelete.equalsIgnoreCase("y")) {
                     accountController.deleteAccount(currentAccount);
+                    accounts.remove(currentAccount);
+                    currentUser.setAccounts(accounts);
                 }
-                accountsPrompt();
+                accountCreateAndView();
                 break;
             default:
                 System.out.println("Please choose options 1, 2, or 3.");
-                accountsPrompt();
+                accountOptions();
                 break;
 
         }
     }
 
     public User getUserCredentials() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Please enter a username:");
         String username;
         String password;
         username = scanner.nextLine();
-        System.out.println("Please enter a password");
+        System.out.println("Please enter a password:");
         password = scanner.nextLine();
         return new User(username, password);
     }
 
     public Account getNewAccountDetails() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Please select the account type: \n1. Checking\n2. Savings");
         String typeChoice = scanner.nextLine();
         System.out.println("Please enter the initial deposit amount: ");
@@ -158,15 +184,16 @@ public class Driver {
         return accounts;
     }
 
-    public Account selectAccount(List<Account> accounts) {
+    public void selectAccount(List<Account> accounts) {
+        Scanner scanner = new Scanner(System.in);
         String selectedAccount = scanner.nextLine();
-        Account chosenAccount = new Account();
         for (Account a : accounts) {
             if (selectedAccount.equals(String.valueOf(a.getId()))) {
-                chosenAccount = a;
+                this.currentAccount = a;
+                break;
             }
         }
-        return chosenAccount;
+
     }
 
 }

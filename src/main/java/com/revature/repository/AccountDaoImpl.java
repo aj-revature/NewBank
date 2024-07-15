@@ -15,19 +15,19 @@ public class AccountDaoImpl implements AccountDao {
     private static final DecimalFormat df = new DecimalFormat("0.00");
 
     @Override
-    public Account createAccount(Account account, User user) {
+    public Account createAccount(Account account) {
         String sql = "insert into account (type, balance, userId) values (?, ?, ?)";
 
         try (Connection connection = DatabaseConnector.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, account.getType());
             stmt.setFloat(2, account.getBalance());
-            stmt.setInt(3, user.getUserId());
+            stmt.setInt(3, account.getUserId());
             int result = stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             if (result == 1) {
                 account.setId(rs.getInt(1));
-                account.setBalance(rs.getFloat(2));
+                account = getAccountByAccountId(account.getId());
                 System.out.println("Account #" + account.getId() + " has been created and has a balance of $" +
                         df.format(account.getBalance()));
                 return account;
@@ -50,13 +50,36 @@ public class AccountDaoImpl implements AccountDao {
             stmt.setInt(2, account.getId());
             int result = stmt.executeUpdate();
             if (result == 1) {
-                System.out.println("Transaction was successful! Your new account balance is $" + account.getBalance());
+                System.out.println("Transaction was successful! Your new account balance is $" + df.format(account.getBalance()));
                 return account;
             }
             throw new AccountSQLException("Account update could not be performed. Please try again.");
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }    }
+        }
+    }
+
+    @Override
+    public Account getAccountByAccountId(int accountId) {
+        String sql = "select * from account where id = ?";
+
+        try (Connection connection = DatabaseConnector.getConnection()) {
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, accountId);
+
+            ResultSet resultSet = stmt.executeQuery();
+            Account retrievedAccount = new Account();
+            if (resultSet.next()) {
+                retrievedAccount.setId(resultSet.getInt(1));
+                retrievedAccount.setType(resultSet.getString(2));
+                retrievedAccount.setBalance(Float.parseFloat(df.format(resultSet.getInt(3))));
+                retrievedAccount.setUserId(resultSet.getInt(4));
+            }
+            return retrievedAccount;
+        } catch (SQLException e) {
+            throw new AccountSQLException(e.getMessage());
+        }
+    }
 
     @Override
     public List<Account> getAllAccountsByUserId(int userId) {
@@ -72,7 +95,7 @@ public class AccountDaoImpl implements AccountDao {
                 Account accountRecord = new Account();
                 accountRecord.setId(resultSet.getInt(1));
                 accountRecord.setType(resultSet.getString(2));
-                accountRecord.setBalance(resultSet.getInt(3));
+                accountRecord.setBalance(Float.parseFloat(df.format(resultSet.getInt(3))));
                 accountRecord.setUserId(resultSet.getInt(4));
                 accounts.add(accountRecord);
             }
@@ -86,17 +109,17 @@ public class AccountDaoImpl implements AccountDao {
     public void deleteAccount(Account account) {
         String sql = "delete from account where id = ?";
 
-        try(Connection connection = DatabaseConnector.getConnection()) {
+        try (Connection connection = DatabaseConnector.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setInt(1, account.getId());
             int result = stmt.executeUpdate();
-            System.out.println(result);
             if (result == 1) {
                 System.out.println("Account #" + account.getId() + " has been deleted.");
             }
-            throw new AccountSQLException("Account could not be deleted. Please try again");
-        }
-        catch (RuntimeException | SQLException e) {
+            else {
+                throw new AccountSQLException("Account could not be deleted. Please try again");
+            }
+        } catch (RuntimeException | SQLException e) {
             throw new AccountSQLException(e.getMessage());
         }
     }

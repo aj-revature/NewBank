@@ -1,5 +1,6 @@
 package com.revature.entity;
 
+import java.text.DecimalFormat;
 import java.util.Objects;
 
 public class Account {
@@ -8,6 +9,7 @@ public class Account {
     String type;
     float balance;
     int userId;
+    private static final DecimalFormat df = new DecimalFormat("0.00");
 
     public Account(int id, String type, float balance, int userId) {
         this.id = id;
@@ -76,7 +78,7 @@ public class Account {
         return "Account{" +
                 "id=" + id +
                 ", type='" + type + '\'' +
-                ", balance=" + balance +
+                ", balance=" + df.format(balance) +
                 ", userId=" + userId +
                 '}';
     }
