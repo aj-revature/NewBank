@@ -94,6 +94,7 @@ public class Driver {
                 break;
             case "0":
                 System.out.println("You are logged out. Goodbye!");
+                currentUser = new User("", "");
                 menu();
                 break;
             default:
