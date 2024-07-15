@@ -37,7 +37,7 @@ public class UserService {
             boolean usernameMatches = user.getUsername().equals(credentials.getUsername());
             boolean passwordMatch = user.getPassword().equals(credentials.getPassword());
             if (usernameMatches && passwordMatch) {
-                System.out.println("You are logged in!");
+                System.out.println("Hi, " + user.getUsername() + ". You are logged in!");
                 credentials.setUserId(user.getUserId());
             }
         }
