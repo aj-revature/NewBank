@@ -28,8 +28,8 @@ public class AccountDaoImpl implements AccountDao {
             if (result == 1) {
                 account.setId(rs.getInt(1));
                 account = getAccountByAccountId(account.getId());
-                System.out.println("Account #" + account.getId() + " has been created and has a balance of $" +
-                        df.format(account.getBalance()));
+                System.out.println("\nAccount #" + account.getId() + " has been created and has a balance of $" +
+                        df.format(account.getBalance()) + ".\n");
                 return account;
             }
 
@@ -50,7 +50,7 @@ public class AccountDaoImpl implements AccountDao {
             stmt.setInt(2, account.getId());
             int result = stmt.executeUpdate();
             if (result == 1) {
-                System.out.println("Transaction was successful! Your new account balance is $" + df.format(account.getBalance()));
+                System.out.println("\nTransaction was successful! Your new account balance is $" + df.format(account.getBalance()) + ".\n");
                 return account;
             }
             throw new AccountSQLException("Account update could not be performed. Please try again.");
@@ -114,7 +114,7 @@ public class AccountDaoImpl implements AccountDao {
             stmt.setInt(1, account.getId());
             int result = stmt.executeUpdate();
             if (result == 1) {
-                System.out.println("Account #" + account.getId() + " has been deleted.");
+                System.out.println("\nAccount #" + account.getId() + " has been deleted.\n");
             }
             else {
                 throw new AccountSQLException("Account could not be deleted. Please try again");

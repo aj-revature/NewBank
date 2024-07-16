@@ -15,19 +15,26 @@ public class UserService {
 
     public User validateNewCredentials(User newUserCredentials) {
         //1. check if lengths are correct
-        if (checkUsernamePasswordLength(newUserCredentials)) {
-            //2. check if unique
-            if (checkUsernameIsUnique(newUserCredentials)) {
+        if (checkUsernameLength(newUserCredentials)) {
+            if (checkPasswordLength(newUserCredentials)) {
+                //2. check if unique
+                if (checkUsernameIsUnique(newUserCredentials)) {
 
-                return userDao.createUser(newUserCredentials);
+                    return userDao.createUser(newUserCredentials);
+                }
+                else {
+                    System.out.println("Username " + newUserCredentials.getUsername() + " already exists." +
+                            " Please choose a unique username.");
+                }
             }
             else {
-                System.out.println("Username " + newUserCredentials.getUsername() + " already exists." +
-                        " Please choose a unique username.");
+                System.out.println("Password is the wrong length." +
+                        " Please choose a password that is between 1 and 30 characters long.");
             }
+
         } else {
-            System.out.println("Username " + newUserCredentials.getUsername() + " is too long." +
-                    " Please choose a username shorter than 30 characters.");
+            System.out.println("Username " + newUserCredentials.getUsername() + " is the wrong length." +
+                    " Please choose a username that is between 1 and 30 characters long.");
         }
         return newUserCredentials;
     }
@@ -47,11 +54,15 @@ public class UserService {
         return credentials;
     }
 
-    private boolean checkUsernamePasswordLength(User userCredentials) {
-        boolean usernameIsValid = userCredentials.getUsername().length() <= 30;
-        boolean passwordIsValid = userCredentials.getPassword().length() <= 30;
+    private boolean checkUsernameLength(User userCredentials) {
 
-        return usernameIsValid && passwordIsValid;
+        return userCredentials.getUsername().length() <= 30 &&
+                !userCredentials.getUsername().isEmpty();
+    }
+
+    private boolean checkPasswordLength(User userCredentials) {
+        return userCredentials.getPassword().length() <= 30 &&
+                !userCredentials.getPassword().isEmpty();
     }
 
     private boolean checkUsernameIsUnique(User userCredentials) {

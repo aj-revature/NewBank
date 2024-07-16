@@ -31,14 +31,14 @@ public class Driver {
     public void menu() {
         Scanner scanner = new Scanner(System.in);
         if (currentUser.getUsername().isEmpty()) {
-            System.out.println("Welcome to the Bank!");
+            System.out.println("\nWelcome to the Bank!\n");
         } else {
-            System.out.println("Welcome to the Bank " + currentUser.getUsername() + "!");
+            System.out.println("\nWelcome to the Bank " + currentUser.getUsername() + "!\n");
         }
-        System.out.println("Please choose below:");
-        System.out.println("1. Login");
-        System.out.println("2. Register");
-        System.out.println("0. Exit");
+        System.out.println("Please choose an option below:");
+        System.out.println("\t1. Login");
+        System.out.println("\t2. Register");
+        System.out.println("\t0. Exit");
         stringOption = scanner.nextLine();
         try {
             switch (stringOption) {
@@ -70,13 +70,14 @@ public class Driver {
     }
 
     public void accountCreateAndView() {
+        System.out.println("\nHi " + currentUser.getUsername() + ", what would you like to do?");
         if (!accounts.isEmpty()) {
-            System.out.println("1. Create Account");
-            System.out.println("2. View All Accounts");
+            System.out.println("\t1. Create Account");
+            System.out.println("\t2. View All Accounts");
         } else {
-            System.out.println("1. Create Account");
+            System.out.println("\t1. Create Account");
         }
-        System.out.println("0. Log Out");
+        System.out.println("\t0. Log Out");
 
         Scanner scanner = new Scanner(System.in);
         String viewOrCreate = scanner.nextLine();
@@ -98,6 +99,7 @@ public class Driver {
                 menu();
                 break;
             default:
+                System.out.println("Please choose option 1, 2, or 0.");
                 accountCreateAndView();
                 break;
         }
@@ -106,12 +108,12 @@ public class Driver {
 
     public void accountOptions() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Your current account balance is $" + df.format(currentAccount.getBalance()));
-        System.out.println("What would you like to do?");
-        System.out.println("1. Deposit Money");
-        System.out.println("2. Withdraw Money");
-        System.out.println("3. Close Account");
-        System.out.println("0. Go Back");
+        System.out.println("\nYour current account balance is $" + df.format(currentAccount.getBalance()));
+        System.out.println("\nWhat would you like to do?");
+        System.out.println("\t1. Deposit Money");
+        System.out.println("\t2. Withdraw Money");
+        System.out.println("\t3. Close Account");
+        System.out.println("\t0. Go Back\n");
         String choice = scanner.nextLine();
         switch (choice) {
             case "1":
@@ -125,7 +127,7 @@ public class Driver {
                 numberOption = scanner.nextFloat();
                 if (currentAccount.getBalance() <= numberOption) {
                     System.out.println("Your current account balance is $" + df.format(currentAccount.getBalance()));
-                    System.out.println("Please enter an amount that is less than your current balance:");
+                    System.out.println("Please enter a withdrawal amount that is less than your current balance:");
                     float numberChoice = scanner.nextFloat();
                     currentAccount = accountController.withdraw(currentAccount, numberChoice);
                 } else {
@@ -148,7 +150,7 @@ public class Driver {
             case "0":
                 accountCreateAndView();
             default:
-                System.out.println("Please choose options 1, 2, or 3.");
+                System.out.println("Please choose option 1, 2, 3, or 0.");
                 accountOptions();
                 break;
 
@@ -168,7 +170,7 @@ public class Driver {
 
     public Account getNewAccountDetails() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Please select the account type: \n1. Checking\n2. Savings");
+        System.out.println("Please select the account type: \n\t1. Checking\n\t2. Savings");
         String typeChoice = scanner.nextLine();
         System.out.println("Please enter the initial deposit amount: ");
         float balance = scanner.nextFloat();
@@ -182,9 +184,9 @@ public class Driver {
     }
 
     public List<Account> printAccounts(User user) {
-        System.out.println("Please enter the account number to view below:");
+        System.out.println("\nPlease enter the account number to view below:");
         for (Account a : accounts) {
-            System.out.println("Account #" + a.getId() + " " + a.getType() + ": $" + df.format(a.getBalance()));
+            System.out.println("\tAccount #" + a.getId() + " " + a.getType() + ": $" + df.format(a.getBalance()));
         }
         return accounts;
     }

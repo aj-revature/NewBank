@@ -1,32 +1,44 @@
-1. Register:
     - try register with username 30+ chars
         uskddyvgibsljaldgkUYFEWBHJVSDKJNCSscadv
+
     - try register with existing username
         admin,123
+
     - successful register
         uniqueUserName,123
-2. Show DBeaver
-3. Login (Securely access bank portal):
+
+    - Show DBeaver
+
     - try login with wrong user
         1,randomUsername,123
+
     - try login with wrong password
         uniqueUserName,1234
+
     - try successful login
         uniqueUserName,123
-4. Create Account and View All (Open new checking accounts):
+
     - try create new account
         1,1,75.44
+
     - view all created accounts
         2,{accountNumber}
-5. Show DBeaver
-6. Deposit and Withdraw Money
-    - try withdrawal > account balance
+
+    - Show DBeaver
+
+    - try withdrawal >= account balance
+        accountId,2,accountBalance
+
     - try withdrawal < balance
+        <accountBalance
+
     - try deposit
         {accountId},2,{accountBalance},{<accountBalance},2
-7. Close Account
-    - try close account
-    - close account
-        3,y,2
 
-8. Show DBeaver
+    - try close account
+        3,y
+
+    - view all accounts
+        2
+
+    - Show DBeaver

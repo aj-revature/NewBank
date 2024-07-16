@@ -20,7 +20,7 @@ public class UserDaoImpl implements UserDao {
             int result = preppedStatement.executeUpdate();
             if (result == 1) {
                 newUserCredentials.setUserId(getUserIdByUsername(newUserCredentials.getUsername()).getUserId());
-                System.out.println("New user created.");
+                System.out.println("\nNew user created.");
                 return newUserCredentials;
             }
             throw new UserSQLException("User could not be created; please try again");
