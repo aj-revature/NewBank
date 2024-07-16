@@ -19,13 +19,14 @@
     - view all created accounts
         2,{accountNumber}
 5. Show DBeaver
-6. Close Account
-    - try close account
-    - close account
-        3,y,2
-7. Deposit and Withdraw Money
+6. Deposit and Withdraw Money
     - try withdrawal > account balance
     - try withdrawal < balance
     - try deposit
         {accountId},2,{accountBalance},{<accountBalance},2
+7. Close Account
+    - try close account
+    - close account
+        3,y,2
+
 8. Show DBeaver

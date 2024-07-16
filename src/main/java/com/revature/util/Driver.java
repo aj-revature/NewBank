@@ -93,7 +93,7 @@ public class Driver {
                 accountOptions();
                 break;
             case "0":
-                System.out.println("You are logged out. Goodbye!");
+                System.out.println("You are logged out.\n");
                 currentUser = new User("", "");
                 menu();
                 break;
